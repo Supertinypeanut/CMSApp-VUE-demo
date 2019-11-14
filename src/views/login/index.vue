@@ -7,7 +7,7 @@
         <img src="../../assets/img/logo_admin.png" alt="">
       </div>
       <!-- 表单 -->
-      <el-form :model="formData" :rules="rules" ref="formData" style="margin-top:20px">
+      <el-form status-icon :model="formData" :rules="rules" ref="formData" style="margin-top:20px">
         <!-- 手机号 -->
         <el-form-item required prop="mobile" class="demo-ruleForm">
           <el-input v-model="formData.mobile" placeholder="输入手机号"></el-input>
