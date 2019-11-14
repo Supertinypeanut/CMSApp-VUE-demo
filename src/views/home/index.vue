@@ -9,14 +9,16 @@
       <!-- 头部组件 -->
       <home-header></home-header>
     </el-header>
-    <el-main class="main">Main</el-main>
+    <el-main class="main">
+      <router-view></router-view>
+    </el-main>
   </el-container>
 </el-container>
 </template>
 
 <script>
-import Aside from './Aside'
-import Header from './Header'
+import Aside from '../../components/Aside'
+import Header from '../../components/Header'
 
 export default {
   created () {
