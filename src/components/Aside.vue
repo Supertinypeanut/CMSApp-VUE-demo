@@ -44,7 +44,7 @@ export default {
 <style lang="less" scoped>
 .aside{
     overflow: hidden;
-    height: 100vh;
+    height: 100%;
     background-color: #323745;
     .logo{
         display: flex;
