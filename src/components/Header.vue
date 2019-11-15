@@ -46,11 +46,22 @@ export default {
   methods: {
     // 退出登录按钮
     onExit () {
-      localStorage.clear('token')
-      this.$router.push('/login')
-      this.$message({
-        message: '退出成功',
-        type: 'success'
+      this.$confirm('此操作将退出登录状态, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        localStorage.clear('token')
+        this.$router.push('/login')
+        this.$message({
+          message: '退出成功',
+          type: 'success'
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消退出'
+        })
       })
     }
   }

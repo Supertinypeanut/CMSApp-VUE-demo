@@ -86,6 +86,7 @@
           <template slot-scope="scope">
             <el-button
               size="mini"
+              type="primary"
               @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
             <el-button
               size="mini"
@@ -102,19 +103,8 @@
 export default {
   name: 'articles',
   created () {
-    // 获取列表数据
-    this.$axios.get('articles', {
-      headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
-    }).then(response => {
-      console.log(response.data)
-      this.tableData = response.data.data.results
-    }).catch(() => {
-      this.$message({
-        showClose: true,
-        message: '数据获取失败,请重新刷新',
-        type: 'warning'
-      })
-    })
+  //  数据获取
+    this.loadData()
   },
   data () {
     return {
@@ -178,11 +168,48 @@ export default {
     }
   },
   methods: {
+    loadData () {
+      // 获取列表数据
+      this.$axios.get('/articles').then(response => {
+        this.tableData = response.data.data.results
+      }).catch(() => {
+        this.$message({
+          showClose: true,
+          message: '数据获取失败,请重新刷新',
+          type: 'warning'
+        })
+      })
+    },
+    // 编辑按钮
     handleEdit (index, row) {
       console.log(index, row)
     },
+    // 删除按钮
     handleDelete (index, row) {
       console.log(index, row)
+      this.$confirm('此操作将永久删除该该文章, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.$axios.delete(`articles/${row.id}`)
+          .then(response => {
+            this.$message({
+              type: 'success',
+              message: response.message
+            })
+          }).catch(() => {
+            this.$message({
+              type: 'error',
+              message: '删除失败'
+            })
+          })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        })
+      })
     }
   }
 }
