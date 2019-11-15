@@ -22,7 +22,7 @@ import Header from '../../components/Header'
 
 export default {
   created () {
-    localStorage.getItem('token') ? this.loadData() : this.$router.replace('/login')
+    this.loadData()
   },
   methods: {
     loadData () {

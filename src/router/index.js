@@ -4,6 +4,9 @@ import VueRouter from 'vue-router'
 import Home from '../views/home'
 // 首页默认组件
 import Main from '../views/home/Main'
+// 进度条
+import NProgress from 'nprogress'
+
 Vue.use(VueRouter)
 
 const routes = [
@@ -77,6 +80,20 @@ const routes = [
 
 const router = new VueRouter({
   routes
+})
+
+// 启用导航卫士判别二次登录
+router.beforeEach((to, from, next) => {
+  NProgress.start()
+  if (to.path === '/login') {
+    next()
+    return
+  }
+  localStorage.getItem('token') ? next() : next('/login')
+})
+// 处理nprogress加载条
+router.afterEach((to, from) => {
+  NProgress.done()
 })
 
 export default router

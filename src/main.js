@@ -7,6 +7,10 @@ import ElementUI from 'element-ui'
 import '../node_modules/element-ui/lib/theme-chalk/index.css'
 import './style/index.less'
 
+// 顶部进度条
+import '../node_modules/nprogress/nprogress.js'
+import '../node_modules/nprogress/nprogress.css'
+
 import axios from 'axios'
 
 // 初始化ElementUI组件库
