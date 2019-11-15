@@ -82,16 +82,17 @@ const router = new VueRouter({
   routes
 })
 
-// 启用导航卫士判别二次登录
+// 启用导航卫士判别二次登录和开启nprogress加载条
 router.beforeEach((to, from, next) => {
   NProgress.start()
   if (to.path === '/login') {
     next()
+    NProgress.done()
     return
   }
   localStorage.getItem('token') ? next() : next('/login')
 })
-// 处理nprogress加载条
+// 关闭nprogress加载条
 router.afterEach((to, from) => {
   NProgress.done()
 })

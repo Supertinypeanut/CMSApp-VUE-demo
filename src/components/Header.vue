@@ -31,7 +31,7 @@
         </el-dropdown-item>
         <!-- 分割线 -->
         <el-divider style="margin:0;"></el-divider>
-        <el-dropdown-item class="clearfix">
+        <el-dropdown-item @click.native="onExit" class="clearfix">
         退出
         <el-badge class="mark" />
         </el-dropdown-item>
@@ -43,7 +43,17 @@
 
 <script>
 export default {
-
+  methods: {
+    // 退出登录按钮
+    onExit () {
+      localStorage.clear('token')
+      this.$router.push('/login')
+      this.$message({
+        message: '退出成功',
+        type: 'success'
+      })
+    }
+  }
 }
 </script>
 

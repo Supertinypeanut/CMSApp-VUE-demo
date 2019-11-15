@@ -19,6 +19,7 @@ Vue.config.productionTip = false
 
 // 设置请求接口基地址
 axios.defaults.baseURL = 'http://ttapi.research.itcast.cn/mp/v1_0/'
+// axios.defaults.headers.common['Authorization'] = `Bearer ${localStorage.getItem('token')}`
 
 // 挂载axios到实例
 Vue.prototype.$axios = axios

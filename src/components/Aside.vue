@@ -43,6 +43,7 @@ export default {
 
 <style lang="less" scoped>
 .aside{
+    overflow: hidden;
     height: 100vh;
     background-color: #323745;
     .logo{
