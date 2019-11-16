@@ -9,11 +9,13 @@
       <el-form ref="formData"  label-width="80px">
         <el-form-item label="文章状态:">
           <el-radio-group v-model="formData.status">
-            <el-radio label="全部" value=""></el-radio>
-            <el-radio label="草稿" value="0"></el-radio>
-            <el-radio label="待审核" value="1"></el-radio>
-            <el-radio label="审核通过" value="2"></el-radio>
-            <el-radio label="审核失败" value="4"></el-radio>
+          <!-- 数据为null时，axios不会发送该参数 -->
+            <el-radio :label="null">全部</el-radio>
+            <el-radio label="0">草稿</el-radio>
+            <el-radio label="1">待审核</el-radio>
+            <el-radio label="2">审核通过</el-radio>
+            <el-radio label="3">审核失败</el-radio>
+            <el-radio label="4">已删除</el-radio>
           </el-radio-group>
         </el-form-item>
         <el-form-item label="频道列表:">
@@ -25,6 +27,7 @@
         <!-- 日期选择器 -->
         <el-form-item label="时间范围:">
           <el-date-picker
+            value-format="yyyy-MM-dd"
             v-model="date"
             type="daterange"
             align="right"
@@ -37,14 +40,14 @@
         </el-form-item>
         <!-- 按钮 -->
         <el-form-item>
-          <el-button type="primary">确定</el-button>
+          <el-button @click="onQuery" type="primary">查询</el-button>
         </el-form-item>
       </el-form>
     </el-card>
     <!-- 数据列表 -->
     <el-card class="box-card lists" style="margin-top:10px;">
       <div slot="header" class="clearfix">
-        <span>共找到<i>59893</i>条符合条件的内容</span>
+        <span>共找到{{this.total_count}}条符合条件的内容</span>
       </div>
       <!-- 表格 -->
       <el-table
@@ -96,7 +99,9 @@
           </template>
         </el-table-column>
       </el-table>
+      <!--分页 -->
       <el-pagination
+      :disabled="loading"
       @current-change="handleCurrentChange"
       :page-size="10"
       layout="prev, pager, next, jumper"
@@ -119,13 +124,13 @@ export default {
       date: '',
       // 提交数据
       formData: {
-        status: '',
-        channel_id: '',
-        begin_pubdate: '',
-        end_pubdate: '',
-        page: '',
-        per_page: '',
-        response_type: ''
+        status: null,
+        channel_id: null,
+        begin_pubdate: null,
+        end_pubdate: null,
+        page: 1,
+        per_page: null,
+        response_type: null
       },
       // 时间选择器
       pickerOptions: {
@@ -173,27 +178,38 @@ export default {
   },
   watch: {
     // 获取开始和结束时间
-    date () {
-      this.formData.begin_pubdate = this.date[0]
-      this.formData.end_pubdate = this.date[1]
+    date: {
+      handler () {
+        // 移除时间，让时间初始化，否者将传空字符串
+        this.formData.begin_pubdate = this.date[0] ? this.date[0] : null
+        this.formData.end_pubdate = this.date[1] ? this.date[1] : null
+      },
+      deep: true
     }
   },
   methods: {
-    loadData (page = 1) {
-      // 获取列表数据
-      this.$axios.get('/articles', { params: { page } }).then(response => {
-        console.log(response.data)
-        this.tableData = response.data.data.results
-        this.total_count = response.data.data.total_count
-      }).catch(() => {
-        this.$message({
-          showClose: true,
-          message: '数据获取失败,请重新刷新',
-          type: 'warning'
+    loadData () {
+      this.loading = true
+      // 获取数据
+      this.$axios.get('/articles', { params: this.formData })
+        .then(response => {
+        // 获取列表数据
+          this.tableData = response.data.data.results
+          // 获取文章总数
+          this.total_count = response.data.data.total_count
+        }).catch(() => {
+          this.$message({
+            showClose: true,
+            message: '数据获取失败,请重新刷新',
+            type: 'warning'
+          })
+        }).finally(() => {
+          this.loading = false
         })
-      }).finally(() => {
-        this.loading = false
-      })
+    },
+    // 查询按钮
+    onQuery () {
+      this.loadData()
     },
     // 编辑按钮
     handleEdit (index, row) {
@@ -228,8 +244,8 @@ export default {
     },
     // 分页功能
     handleCurrentChange (val) {
-      console.log(`当前页: ${val}`)
-      this.loadData(val)
+      this.formData.page = val
+      this.loadData()
     }
   }
 }
