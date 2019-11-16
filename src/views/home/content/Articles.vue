@@ -20,8 +20,8 @@
         </el-form-item>
         <el-form-item label="频道列表:">
           <el-select v-model="formData.channel_id" placeholder="请选择">
-            <el-option label="ios" value="0"></el-option>
-            <el-option label="c++" value="1"></el-option>
+            <!-- 渲染文章列表 -->
+            <el-option v-for="item in channels" :key="item.id" :label="item.name" :value="item.id"></el-option>
           </el-select>
         </el-form-item>
         <!-- 日期选择器 -->
@@ -173,7 +173,9 @@ export default {
       // 表格加载
       loading: true,
       // 文章数
-      total_count: 0
+      total_count: 0,
+      // 文章频道
+      channels: []
     }
   },
   watch: {
@@ -189,11 +191,11 @@ export default {
   },
   methods: {
     loadData () {
+      // 开启加载
       this.loading = true
-      // 获取数据
+      // 获取表格数据
       this.$axios.get('/articles', { params: this.formData })
         .then(response => {
-        // 获取列表数据
           this.tableData = response.data.data.results
           // 获取文章总数
           this.total_count = response.data.data.total_count
@@ -204,8 +206,16 @@ export default {
             type: 'warning'
           })
         }).finally(() => {
+          // 关闭加载
           this.loading = false
         })
+      // 获取文章频道
+      this.$axios.get('channels').then(response => {
+        // console.log(response.data)
+        this.channels = response.data.data.channels
+      }).catch(() => {
+
+      })
     },
     // 查询按钮
     onQuery () {
@@ -223,6 +233,7 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
+        // 发送删除文章请求
         this.$axios.delete(`articles/${row.id}`)
           .then(response => {
             this.$message({
