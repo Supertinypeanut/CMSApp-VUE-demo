@@ -48,6 +48,7 @@
       </div>
       <!-- 表格 -->
       <el-table
+        v-loading="loading"
         :data="tableData"
         style="width: 100%">
         <el-table-column
@@ -95,6 +96,12 @@
           </template>
         </el-table-column>
       </el-table>
+      <el-pagination
+      @current-change="handleCurrentChange"
+      :page-size="10"
+      layout="prev, pager, next, jumper"
+      :total="total_count">
+    </el-pagination>
     </el-card>
   </div>
 </template>
@@ -157,7 +164,11 @@ export default {
         { type: 'success', label: '审核通过' },
         { type: 'danger', label: '审核失败' },
         { type: 'info', label: '已删除' }
-      ]
+      ],
+      // 表格加载
+      loading: true,
+      // 文章数
+      total_count: 0
     }
   },
   watch: {
@@ -168,16 +179,20 @@ export default {
     }
   },
   methods: {
-    loadData () {
+    loadData (page = 1) {
       // 获取列表数据
-      this.$axios.get('/articles').then(response => {
+      this.$axios.get('/articles', { params: { page } }).then(response => {
+        console.log(response.data)
         this.tableData = response.data.data.results
+        this.total_count = response.data.data.total_count
       }).catch(() => {
         this.$message({
           showClose: true,
           message: '数据获取失败,请重新刷新',
           type: 'warning'
         })
+      }).finally(() => {
+        this.loading = false
       })
     },
     // 编辑按钮
@@ -210,6 +225,11 @@ export default {
           message: '已取消删除'
         })
       })
+    },
+    // 分页功能
+    handleCurrentChange (val) {
+      console.log(`当前页: ${val}`)
+      this.loadData(val)
     }
   }
 }

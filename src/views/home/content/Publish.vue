@@ -1,13 +1,19 @@
 <template>
-  <h1>发布文章</h1>
+  <el-card class="box-card">
+    <div slot="header" class="clearfix">
+      <span>发表文章</span>
+    </div>
+  </el-card>
 </template>
-
-<script>
-export default {
-
+<style lang="less" scoped>
+.box-card {
+  .clearfix:before
+  .clearfix:after {
+    display: table;
+    content: "";
+  }
+  .clearfix:after {
+    clear: both
+  }
 }
-</script>
-
-<style>
-
 </style>
