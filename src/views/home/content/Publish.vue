@@ -54,7 +54,9 @@ export default {
         draft: false
       },
       // 频道列表数据
-      channels: []
+      channels: [],
+      // 获取指定文章id
+      targetID: ''
     }
   },
   created () {
@@ -66,19 +68,38 @@ export default {
   methods: {
     // 发表或存入草稿
     onSubmit (draft) {
-      this.$axios.post('articles', this.formData).then(response => {
-        this.$message({
-          message: '文章发表成功',
-          type: 'success'
+      // 判断是新建还是修改
+      if (this.targetID) {
+        // 修改文章
+        this.$axios.put(`articles/${this.targetID}`, this.formData).then(response => {
+          this.$message({
+            message: '文章修改成功',
+            type: 'success'
+          })
+          // 跳回内容列表
+          this.$router.push('/content/articles')
+        }).catch(() => {
+          this.$message({
+            message: '文章修改失败',
+            type: 'error'
+          })
         })
-        // 跳回内容列表
-        this.$router.push('/content/articles')
-      }).catch(() => {
-        this.$message({
-          message: '文章发表失败',
-          type: 'error'
+      } else {
+        // 新建文章
+        this.$axios.post('articles', this.formData).then(response => {
+          this.$message({
+            message: '文章发表成功',
+            type: 'success'
+          })
+          // 跳回内容列表
+          this.$router.push('/content/articles')
+        }).catch(() => {
+          this.$message({
+            message: '文章发表失败',
+            type: 'error'
+          })
         })
-      })
+      }
     },
     // 获取频道
     getChannels () {
@@ -93,11 +114,10 @@ export default {
     },
     // 获取指定文章数据
     getData () {
-      // 获取指定文章id
-      const targetID = location.hash.split('=')[1]
+      this.targetID = location.hash.split('=')[1]
       // 发送获取指定文章请求
-      this.$axios.get(`articles/${targetID}`).then(response => {
-        console.log(response.data)
+      this.$axios.get(`articles/${this.targetID}`).then(response => {
+        // console.log(response.data)
         this.formData = response.data.data
       }).catch(() => {
         this.$message({
