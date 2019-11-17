@@ -14,10 +14,10 @@
      </el-form-item>
      <el-form-item label="封面">
        <el-radio-group v-model="formData.cover.type">
-         <el-radio label="1">单面</el-radio>
-         <el-radio label="3">三图</el-radio>
-         <el-radio label="0">无图</el-radio>
-         <el-radio label="-1">自动</el-radio>
+         <el-radio :label="0">无图</el-radio>
+         <el-radio :label="1">单面</el-radio>
+         <el-radio :label="3">三图</el-radio>
+         <el-radio :label="-1">自动</el-radio>
        </el-radio-group>
      </el-form-item>
      <el-form-item label="内容">
@@ -40,9 +40,9 @@ export default {
         title: '',
         content: '',
         cover: {
-          type: 0
+          type: 0,
+          images: []
         },
-        images: [],
         channel_id: null,
         draft: false
       },
@@ -63,8 +63,20 @@ export default {
     })
   },
   methods: {
+    // 发表或存入草稿
     onSubmit (draft) {
       console.log('submit!')
+      this.$axios.post('articles', this.formData).then(response => {
+        this.$message({
+          message: '文章发表成功',
+          type: 'success'
+        })
+      }).catch(() => {
+        this.$message({
+          message: '文章发表失败',
+          type: 'error'
+        })
+      })
     }
   }
 }
