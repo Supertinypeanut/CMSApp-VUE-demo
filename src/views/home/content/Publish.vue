@@ -21,7 +21,8 @@
        </el-radio-group>
      </el-form-item>
      <el-form-item label="内容">
-       <el-input type="textarea" v-model="formData.content"></el-input>
+       <!-- <el-input type="textarea" v-model="formData.content"></el-input> -->
+       <quillEditor v-model="formData.content"></quillEditor>
      </el-form-item>
      <el-form-item>
        <el-button type="primary" @click="onSubmit(formData.draft =false)">发表</el-button>
@@ -31,6 +32,12 @@
   </el-card>
 </template>
 <script>
+// 导入富文本编辑器
+import '../../../../node_modules/quill/dist/quill.core.css'
+import '../../../../node_modules/quill/dist/quill.snow.css'
+import '../../../../node_modules/quill/dist/quill.bubble.css'
+import { quillEditor } from 'vue-quill-editor'
+
 export default {
   name: 'publish',
   data () {
@@ -53,7 +60,6 @@ export default {
   created () {
     // 获取文章频道列表
     this.$axios.get('/channels').then(response => {
-      // console.log(response.data)
       this.channels = response.data.data.channels
     }).catch(() => {
       this.$message({
@@ -65,12 +71,13 @@ export default {
   methods: {
     // 发表或存入草稿
     onSubmit (draft) {
-      console.log('submit!')
       this.$axios.post('articles', this.formData).then(response => {
         this.$message({
           message: '文章发表成功',
           type: 'success'
         })
+        // 跳回内容列表
+        this.$router.push('/content/articles')
       }).catch(() => {
         this.$message({
           message: '文章发表失败',
@@ -78,6 +85,9 @@ export default {
         })
       })
     }
+  },
+  components: {
+    quillEditor
   }
 }
 </script>
