@@ -38,10 +38,6 @@
             :picker-options="pickerOptions">
           </el-date-picker>
         </el-form-item>
-        <!-- 按钮 -->
-        <el-form-item>
-          <el-button @click="onQuery" type="primary">查询</el-button>
-        </el-form-item>
       </el-form>
     </el-card>
     <!-- 数据列表 -->
@@ -185,8 +181,20 @@ export default {
     date: {
       handler () {
         // 移除时间，让时间初始化，否者将传空字符串
-        this.formData.begin_pubdate = this.date[0] ? this.date[0] : null
-        this.formData.end_pubdate = this.date[1] ? this.date[1] : null
+        if (this.date) {
+          this.formData.begin_pubdate = this.date[0]
+          this.formData.end_pubdate = this.date[1]
+        } else {
+          this.formData.begin_pubdate = null
+          this.formData.end_pubdate = null
+        }
+      },
+      deep: true
+    },
+    // 筛选数据
+    formData: {
+      handler () {
+        this.loadData()
       },
       deep: true
     }
@@ -212,28 +220,16 @@ export default {
           this.loading = false
         })
       // 获取文章频道
-      this.$axios.get('channels').then(response => {
-        // console.log(response.data)
-        this.channels = response.data.data.channels
-      }).catch(() => {
-        this.$message({
-          showClose: true,
-          message: '文章频道获取失败,请重新刷新',
-          type: 'warning'
-        })
-      })
-    },
-    // 查询按钮
-    onQuery () {
-      this.loadData()
+      this.getChannels()
     },
     // 编辑按钮
     handleEdit (index, row) {
-      console.log(index, row)
+      // console.log(index, row)
+      this.$router.push(`/content/publish?target=${this.$JSONbig.parse(row.id)}`)
     },
     // 删除按钮
     handleDelete (index, row) {
-      console.log(index, row)
+      // console.log(index, row)
       this.$confirm('此操作将永久删除该该文章, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -263,6 +259,19 @@ export default {
     handleCurrentChange (val) {
       this.formData.page = val
       this.loadData()
+    },
+    // 获取文章频道
+    getChannels () {
+      this.$axios.get('channels').then(response => {
+        // console.log(response.data)
+        this.channels = response.data.data.channels
+      }).catch(() => {
+        this.$message({
+          showClose: true,
+          message: '文章频道获取失败,请重新刷新',
+          type: 'warning'
+        })
+      })
     }
   }
 }

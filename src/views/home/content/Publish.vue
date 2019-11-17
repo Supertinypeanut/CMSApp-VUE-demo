@@ -59,14 +59,9 @@ export default {
   },
   created () {
     // 获取文章频道列表
-    this.$axios.get('/channels').then(response => {
-      this.channels = response.data.data.channels
-    }).catch(() => {
-      this.$message({
-        message: '文章频道获取失败,请重新刷新',
-        type: 'warning'
-      })
-    })
+    this.getChannels()
+    // 获取指定文章内容
+    this.getData()
   },
   methods: {
     // 发表或存入草稿
@@ -84,9 +79,36 @@ export default {
           type: 'error'
         })
       })
+    },
+    // 获取频道
+    getChannels () {
+      this.$axios.get('/channels').then(response => {
+        this.channels = response.data.data.channels
+      }).catch(() => {
+        this.$message({
+          message: '文章频道获取失败,请重新刷新',
+          type: 'warning'
+        })
+      })
+    },
+    // 获取指定文章数据
+    getData () {
+      // 获取指定文章id
+      const targetID = location.hash.split('=')[1]
+      // 发送获取指定文章请求
+      this.$axios.get(`articles/${targetID}`).then(response => {
+        console.log(response.data)
+        this.formData = response.data.data
+      }).catch(() => {
+        this.$message({
+          message: '文章内容获取失败,请刷新',
+          type: 'warning'
+        })
+      })
     }
   },
   components: {
+    // 富文本组件
     quillEditor
   }
 }

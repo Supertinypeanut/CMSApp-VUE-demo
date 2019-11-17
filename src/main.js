@@ -39,6 +39,7 @@ axios.defaults.transformResponse = [
 
 // 挂载axios到实例
 Vue.prototype.$axios = axios
+Vue.prototype.$JSONbig = JSONbig
 
 new Vue({
   router,
