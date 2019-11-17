@@ -27,6 +27,7 @@ axios.defaults.headers.common['Authorization'] = `Bearer ${localStorage.getItem(
 // 处理响应参数-js最大数限制
 axios.defaults.transformResponse = [
   function (data) {
+    // 防止返回参数为空程序出错
     try {
       data = JSONbig.parse(data)
       return data

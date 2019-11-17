@@ -100,13 +100,15 @@
         </el-table-column>
       </el-table>
       <!--分页 -->
-      <el-pagination
-      :disabled="loading"
-      @current-change="handleCurrentChange"
-      :page-size="10"
-      layout="prev, pager, next, jumper"
-      :total="total_count">
-    </el-pagination>
+      <el-row type="flex" class="row-bg" justify="center">
+        <el-pagination
+          :disabled="loading"
+          @current-change="handleCurrentChange"
+          :page-size="10"
+          layout="prev, pager, next, jumper"
+          :total="total_count">
+        </el-pagination>
+      </el-row>
     </el-card>
   </div>
 </template>
@@ -214,7 +216,11 @@ export default {
         // console.log(response.data)
         this.channels = response.data.data.channels
       }).catch(() => {
-
+        this.$message({
+          showClose: true,
+          message: '文章频道获取失败,请重新刷新',
+          type: 'warning'
+        })
       })
     },
     // 查询按钮
