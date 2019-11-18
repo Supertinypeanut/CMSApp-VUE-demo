@@ -218,7 +218,7 @@ export default {
     // 编辑按钮
     handleEdit (index, row) {
       // console.log(index, row)
-      this.$router.push(`/content/publish/${row.id}`)
+      this.$router.push(`/content/comment/detail/${row.id}`)
     },
     // 状态开关
     onChange (articleId, status) {
