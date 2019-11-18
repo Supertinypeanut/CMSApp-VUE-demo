@@ -8,9 +8,10 @@
        <el-input v-model="formData.title"></el-input>
      </el-form-item>
      <el-form-item label="频道:">
-       <el-select v-model="formData.channel_id" placeholder="请选择">
+       <!-- <el-select v-model="formData.channel_id" placeholder="请选择">
          <el-option v-for="item in channels" :key="item.id" :label="item.name" :value="item.id"></el-option>
-       </el-select>
+       </el-select> -->
+       <channels v-model="formData.channel_id"></channels>
      </el-form-item>
      <el-form-item label="封面">
        <el-radio-group v-model="formData.cover.type">
@@ -38,6 +39,8 @@ import '../../../../node_modules/quill/dist/quill.snow.css'
 import '../../../../node_modules/quill/dist/quill.bubble.css'
 import { quillEditor } from 'vue-quill-editor'
 
+// 导入自定义文章频道组件
+import channels from '@/components/Channels'
 export default {
   name: 'publish',
   data () {
@@ -54,8 +57,6 @@ export default {
       },
       // 是否存草稿
       draft: false,
-      // 频道列表数据
-      channels: [],
       // 获取指定文章id
       targetID: ''
     }
@@ -133,7 +134,9 @@ export default {
   },
   components: {
     // 富文本组件
-    quillEditor
+    quillEditor,
+    // 自定义文章频道组件
+    channels
   }
 }
 </script>
