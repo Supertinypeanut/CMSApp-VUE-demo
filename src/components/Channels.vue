@@ -1,4 +1,5 @@
 <template>
+<!--自定义封装的文章频道组件 -->
   <el-select :value="value" @input="onInput" placeholder="请选择">
     <!-- 渲染文章列表 -->
     <el-option v-for="item in channels" :key="item.id" :label="item.name" :value="item.id"></el-option>
@@ -26,7 +27,7 @@ export default {
     // 获取文章频道
     getChannels () {
       this.$axios.get('channels').then(response => {
-        console.log(response.data)
+        // console.log(response.data)
         this.channels = response.data.data.channels
       }).catch(() => {
         this.$message({

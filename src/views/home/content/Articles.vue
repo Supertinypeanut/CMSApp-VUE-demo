@@ -49,21 +49,21 @@
         style="width: 100%">
         <el-table-column
           label="封面"
-          width="180">
+          width="260">
           <template slot-scope="scope">
             <div class="block"><el-avatar shape="square" :size="50" :src="scope.row.cover.images[0]"></el-avatar></div>
           </template>
         </el-table-column>
         <el-table-column
           label="标题"
-          width="180">
+          width="260">
           <template slot-scope="scope">
             <p>{{scope.row.title}}</p>
           </template>
         </el-table-column>
         <el-table-column
           label="状态"
-          width="180">
+          width="260">
           <template slot-scope="scope">
             <el-tag
               :type="items[scope.row.status].type"
@@ -74,7 +74,7 @@
         </el-table-column>
         <el-table-column
           label="发布时间"
-          width="180">
+          width="260">
           <template slot-scope="scope">
             <p>{{scope.row.pubdate}}</p>
           </template>
