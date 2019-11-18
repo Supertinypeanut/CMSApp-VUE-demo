@@ -19,10 +19,7 @@
           </el-radio-group>
         </el-form-item>
         <el-form-item label="频道列表:">
-          <el-select v-model="formData.channel_id" placeholder="请选择">
-            <!-- 渲染文章列表 -->
-            <el-option v-for="item in channels" :key="item.id" :label="item.name" :value="item.id"></el-option>
-          </el-select>
+          <channels v-model="formData.channel_id" ></channels>
         </el-form-item>
         <!-- 日期选择器 -->
         <el-form-item label="时间范围:">
@@ -110,6 +107,8 @@
 </template>
 
 <script>
+// 导入封装文章状态组件
+import channels from '@/components/Channels'
 export default {
   name: 'articles',
   created () {
@@ -171,9 +170,7 @@ export default {
       // 表格加载
       loading: true,
       // 文章数
-      total_count: 0,
-      // 文章频道
-      channels: []
+      total_count: 0
     }
   },
   watch: {
@@ -220,7 +217,7 @@ export default {
           this.loading = false
         })
       // 获取文章频道
-      this.getChannels()
+      // this.getChannels()
     },
     // 编辑按钮
     handleEdit (index, row) {
@@ -259,20 +256,11 @@ export default {
     handleCurrentChange (val) {
       this.formData.page = val
       this.loadData()
-    },
-    // 获取文章频道
-    getChannels () {
-      this.$axios.get('channels').then(response => {
-        // console.log(response.data)
-        this.channels = response.data.data.channels
-      }).catch(() => {
-        this.$message({
-          showClose: true,
-          message: '文章频道获取失败,请重新刷新',
-          type: 'warning'
-        })
-      })
     }
+  },
+  components: {
+    // 文章频道组件
+    channels
   }
 }
 </script>

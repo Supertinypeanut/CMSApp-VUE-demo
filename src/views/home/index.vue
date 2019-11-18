@@ -10,15 +10,16 @@
       <home-header></home-header>
     </el-header>
     <el-main class="main">
-      <router-view></router-view>
+      <!-- 加key解决缓存问题 -->
+      <router-view :key="$route.path"></router-view>
     </el-main>
   </el-container>
 </el-container>
 </template>
 
 <script>
-import Aside from '../../components/Aside'
-import Header from '../../components/Header'
+import Aside from '@/components/Aside'
+import Header from '@/components/Header'
 
 export default {
   created () {
