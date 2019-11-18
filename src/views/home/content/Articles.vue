@@ -222,7 +222,7 @@ export default {
     // 编辑按钮
     handleEdit (index, row) {
       // console.log(index, row)
-      this.$router.push(`/content/publish?target=${this.$JSONbig.parse(row.id)}`)
+      this.$router.push(`/content/publish/${row.id}`)
     },
     // 删除按钮
     handleDelete (index, row) {

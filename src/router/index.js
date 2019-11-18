@@ -30,6 +30,11 @@ const routes = [
         component: () => import('../views/home/content/Publish.vue')
       },
       {
+        // 编辑文章
+        path: '/content/publish/:channel_id',
+        component: () => import('../views/home/content/Publish.vue')
+      },
+      {
         // 文章列表
         path: '/content/articles',
         component: () => import('../views/home/content/Articles.vue')

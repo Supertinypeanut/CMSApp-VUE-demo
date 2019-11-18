@@ -72,8 +72,12 @@ export default {
     onSubmit (draft) {
       // 判断是新建还是修改
       if (this.targetID) {
-        // 修改文章
-        this.$axios.put(`articles/${this.targetID}`, this.formData).then(response => {
+        this.$axios({
+          method: 'put',
+          url: `/articles/${this.targetID}`,
+          params: { draft },
+          data: this.formData
+        }).then(response => {
           this.$message({
             message: '文章修改成功',
             type: 'success'
@@ -88,7 +92,14 @@ export default {
         })
       } else {
         // 新建文章
-        this.$axios.post('articles', this.formData).then(response => {
+        this.$axios({
+          method: 'post',
+          url: '/articles',
+          data: this.formData,
+          params: {
+            draft
+          }
+        }).then(response => {
           this.$message({
             message: `文章${draft ? '存入草稿' : '发表'}成功`,
             type: 'success'
@@ -117,7 +128,7 @@ export default {
     // 获取指定文章数据
     getData () {
       // 获取指定文章id
-      this.targetID = location.hash.split('=')[1]
+      this.targetID = this.$route.params.channel_id
       if (this.targetID) {
       // 发送获取指定文章请求
         this.$axios.get(`articles/${this.targetID}`).then(response => {
