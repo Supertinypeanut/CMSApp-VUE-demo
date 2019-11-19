@@ -13,20 +13,20 @@
   <!-- 头像 -->
   <el-col :span="2">
      <div class="demo-type">
-       <el-avatar src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"></el-avatar>
+       <el-avatar :src="user.photo"></el-avatar>
      </div>
   </el-col>
   <!-- Badge 标记 -->
   <el-col :span="3">
     <el-dropdown trigger="click">
-    <span class="el-dropdown-link">小花生<i class="el-icon-caret-bottom el-icon--right"></i></span>
+    <span class="el-dropdown-link">{{user.name}}<i class="el-icon-caret-bottom el-icon--right"></i></span>
     <el-dropdown-menu slot="dropdown">
         <el-dropdown-item class="clearfix">
-          个人信息
+           <router-link to="/account">个人信息</router-link>
           <el-badge class="mark" :value="12" />
         </el-dropdown-item>
         <el-dropdown-item class="clearfix">
-        GitHub
+        <a href="https://github.com/Supertinypeanut">GitHub</a>
         <el-badge class="mark" :value="3" />
         </el-dropdown-item>
         <!-- 分割线 -->
@@ -43,7 +43,31 @@
 
 <script>
 export default {
+  // 获取用户数据
+  created () {
+    // 获取用户信息
+    this.getUser()
+  },
+  data () {
+    return {
+      // 用户信息响应对象
+      user: {}
+    }
+  },
   methods: {
+    // 获取用户信息
+    getUser () {
+      this.$axios.get('/user/profile')
+        .then(response => {
+          // console.log(response.data)
+          this.user = response.data.data
+        }).catch(() => {
+          this.$message({
+            type: 'waring',
+            message: '用户个人信息获取异常'
+          })
+        })
+    },
     // 退出登录按钮
     onExit () {
       this.$confirm('此操作将退出登录状态, 是否继续?', '提示', {
