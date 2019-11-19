@@ -15,7 +15,8 @@
       <el-card :body-style="{ padding: '0px' }">
         <img :src="item.url" class="image">
         <div v-show="!query.collect" class="bottom clearfix">
-          <i class="el-icon-star-off"></i>
+          <!-- 星星是否收藏 -->
+          <i @click="onChangeStar(item)" :class="{'el-icon-star-off' : !item.is_collected ,'el-icon-star-on':item.is_collected}"></i>
           <i class="el-icon-delete-solid"></i>
         </div>
       </el-card>
@@ -48,12 +49,32 @@ export default {
     // 获取数据
     loadImage () {
       this.$axios.get('/user/images', { params: this.query }).then(response => {
-        console.log(response.data.data)
+        // console.log(response.data.data)
         this.data = response.data.data
       }).catch(() => {
         this.$message({
           showClose: true,
           message: '素材获取失败，请刷新',
+          type: 'warning'
+        })
+      })
+    },
+    // 点击星星更改收藏状态
+    onChangeStar (item) {
+      console.log(item)
+      // 发送请求
+      this.$axios.put(`user/images/${item.id}`, { collect: !item.is_collected }).then(response => {
+        this.$message({
+          showClose: true,
+          message: `${!item.is_collected ? '收藏' : '取消收藏'}成功,可以到收藏列表查看`,
+          type: 'success'
+        })
+        // 更新页面
+        this.loadImage()
+      }).catch(() => {
+        this.$message({
+          showClose: true,
+          message: '收藏失败,请刷新页面',
           type: 'warning'
         })
       })
@@ -84,6 +105,10 @@ export default {
     height:40px;
     align-items: center;
     background-color: #ccc;
+    font-size: 25px;
+      .el-icon-star-on{
+      color: rgb(245, 233, 143);
+    }
   }
 }
 </style>
