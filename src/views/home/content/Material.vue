@@ -17,7 +17,7 @@
         <div v-show="!query.collect" class="bottom clearfix">
           <!-- 星星是否收藏 -->
           <i @click="onChangeStar(item)" :class="{'el-icon-star-off' : !item.is_collected ,'el-icon-star-on':item.is_collected}"></i>
-          <i class="el-icon-delete-solid"></i>
+          <i @click="onDelete(item)" class="el-icon-delete-solid"></i>
         </div>
       </el-card>
     </el-col>
@@ -61,7 +61,7 @@ export default {
     },
     // 点击星星更改收藏状态
     onChangeStar (item) {
-      console.log(item)
+      // console.log(item)
       // 发送请求
       this.$axios.put(`user/images/${item.id}`, { collect: !item.is_collected }).then(response => {
         this.$message({
@@ -76,6 +76,37 @@ export default {
           showClose: true,
           message: '收藏失败,请刷新页面',
           type: 'warning'
+        })
+      })
+    },
+    // 删除按钮
+    onDelete (item) {
+      // 弹框提醒
+      this.$confirm('此操作将永久删除该素材, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        // 发送请求
+        this.$axios.delete(`user/images/${item.id}`).then(response => {
+          this.$message({
+            showClose: true,
+            message: `删除成功`,
+            type: 'success'
+          })
+          // 更新页面
+          this.loadImage()
+        }).catch(() => {
+          this.$message({
+            showClose: true,
+            message: '删除失败,请刷新页面',
+            type: 'warning'
+          })
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
         })
       })
     }
