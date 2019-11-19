@@ -3,15 +3,20 @@
   <div slot="header" class="clearfix">
     <span>素材管理</span>
   </div>
+  <!--全部/收藏按钮 -->
+  <div style="margin-bottom:20px;">
+    <el-radio-group v-model="query.collect">
+      <el-radio-button :label="false">全部</el-radio-button>
+      <el-radio-button :label="true">收藏</el-radio-button>
+    </el-radio-group>
+  </div>
   <el-row :gutter="20">
-    <el-col :span="6" v-for="(item, index) in data.results" :key="index" >
+    <el-col style="margin-bottom:20px;" :xs="24" :sm="12" :md="8" :lg="6" :xl="4" v-for="(item, index) in data.results" :key="index" >
       <el-card :body-style="{ padding: '0px' }">
         <img :src="item.url" class="image">
-        <div style="padding: 14px;">
-          <span>好吃的汉堡</span>
-          <div class="bottom clearfix">
-            <el-button type="text" class="button">操作按钮</el-button>
-          </div>
+        <div v-show="!query.collect" class="bottom clearfix">
+          <i class="el-icon-star-off"></i>
+          <i class="el-icon-delete-solid"></i>
         </div>
       </el-card>
     </el-col>
@@ -22,19 +27,27 @@
 
 <script>
 export default {
+  name: 'Material',
   created () {
     this.loadImage()
   },
   data () {
     return {
       // 响应参数对象
-      data: {}
+      data: {},
+      // 请求参数对象
+      query: {
+        // 全部/收藏按钮类型
+        collect: false,
+        page: null,
+        per_page: null
+      }
     }
   },
   methods: {
     // 获取数据
     loadImage () {
-      this.$axios.get('/user/images').then(response => {
+      this.$axios.get('/user/images', { params: this.query }).then(response => {
         console.log(response.data.data)
         this.data = response.data.data
       }).catch(() => {
@@ -45,6 +58,15 @@ export default {
         })
       })
     }
+  },
+  watch: {
+    // 监听请求参数对象
+    query: {
+      deep: true,
+      handler () {
+        this.loadImage()
+      }
+    }
   }
 }
 </script>
@@ -53,8 +75,15 @@ export default {
 .box-card{
   .image{
     width: 100%;
-    height: 250px;
+    height: 200px;
     display: block;
+  }
+  .bottom{
+    display: flex;
+    justify-content: space-evenly;
+    height:40px;
+    align-items: center;
+    background-color: #ccc;
   }
 }
 </style>
