@@ -4,7 +4,6 @@
           <img src="../assets/img/logo_index.png" alt="">
       </div>
       <el-menu
-      default-active="1"
       class="el-menu-vertical-demo"
       background-color="#323745"
       text-color="#ADAFB5"
