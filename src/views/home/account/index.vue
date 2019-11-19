@@ -71,7 +71,26 @@ export default {
     },
     // 编辑按钮
     onEdit () {
+      // 控制编辑开关
       this.isEdit = !this.isEdit
+      // 关闭编辑时，保存发送请求
+      if (this.isEdit) {
+        this.$axios.patch('/user/profile', this.data)
+          .then(response => {
+            // console.log(response.data)
+            this.$message({
+              showClose: true,
+              message: '信息修改成功',
+              type: 'success'
+            })
+          }).catch(() => {
+            this.$message({
+              showClose: true,
+              message: '编辑失败，请重新刷新',
+              type: 'warning'
+            })
+          })
+      }
     },
     onUpFile (file, files) {
       console.log(file, files)
