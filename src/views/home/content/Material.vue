@@ -147,6 +147,11 @@ export default {
     // 上传成功刷新
     onUpSuccess () {
       this.loading = false
+      this.$message({
+        showClose: true,
+        message: '素材上传成功',
+        type: 'success'
+      })
       this.loadImage()
     }
   },

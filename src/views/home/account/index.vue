@@ -6,11 +6,11 @@
   </div>
   <el-row>
     <el-col class="photo" :span="24">
+      <!-- 头像 -->
       <el-avatar :size="80" :src="data.photo"></el-avatar>
       <el-upload
-        :headers="headers"
         :disabled="isEdit"
-        :on-change="onUpFile"
+        :http-request="upFileMethod"
         class="upload-demo"
         ref="upload"
         name="photo"
@@ -50,11 +50,7 @@ export default {
       // 响应数据
       data: {},
       // 是否开启编辑
-      isEdit: true,
-      // 请求头
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem('token')}`
-      }
+      isEdit: true
     }
   },
   methods: {
@@ -63,7 +59,7 @@ export default {
       // 发送请求
       this.$axios.get('/user/profile')
         .then(response => {
-          console.log(response.data)
+          // console.log(response.data)
           this.data = response.data.data
         }).catch(() => {
           this.$message({
@@ -79,6 +75,30 @@ export default {
     },
     onUpFile (file, files) {
       console.log(file, files)
+    },
+    // 自定义上传方法
+    upFileMethod (val) {
+      // console.log(val)
+      const FD = new FormData()
+      FD.append('photo', val.file)
+      this.$axios({
+        method: 'patch',
+        url: 'user/photo',
+        data: FD
+      }).then(response => {
+        this.$message({
+          showClose: true,
+          message: '头像更改成功',
+          type: 'success'
+        })
+        this.loadData()
+      }).catch(() => {
+        this.$message({
+          showClose: true,
+          message: '头像上传失败，请刷新',
+          type: 'warning'
+        })
+      })
     }
   }
 }
