@@ -2,7 +2,7 @@
   <div >
     <div class="el-upload" @click="onClickShow">
     <!-- 视图 -->
-    <img v-if="imageUrl" :src="imageUrl" class="avatar">
+    <img v-if="value" :src="value" class="avatar">
     <i v-else class="el-icon-plus avatar-uploader-icon"></i>
     </div>
     <!-- 对话框 -->
@@ -23,8 +23,8 @@
             <!-- 素材展示列表 -->
             <el-row :gutter="20">
               <template v-for="(item,index) in  materialData">
-                <el-col :key="index" :span="6">
-                  <img :src="item.url" alt="" style="height:100px;">
+                <el-col :key="index" :span="6" class="currentImage">
+                  <img @click="onGetCurrent(item)" :src="item.url" style="height:100px;" >
                 </el-col>
               </template>
             </el-row>
@@ -33,8 +33,8 @@
         </el-tabs>
       </template>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="centerDialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click.native="centerDialogVisible = false">确 定</el-button>
+        <el-button @click="onSave(false)">取 消</el-button>
+        <el-button type="primary" @click="onSave(true)">确 定</el-button>
       </span>
     </el-dialog>
   </div>
@@ -64,7 +64,9 @@ export default {
         per_page: null
       },
       // 素材库响应数据
-      materialData: []
+      materialData: [],
+      // 当前选中对象
+      currentItem: null
     }
   },
   created () {
@@ -76,7 +78,7 @@ export default {
       // 发送请求
       this.$axios.get('/user/images', { params: this.material })
         .then(response => {
-          console.log(response.data)
+          // console.log(response.data)
           this.materialData = response.data.data.results
         }).catch(() => {
           this.$message({
@@ -94,6 +96,21 @@ export default {
     // 点击切换标签页触发
     handleClick () {
       // console.log(val, a, c)
+    },
+    // 获取当前对象
+    onGetCurrent (item) {
+      console.log(item)
+      this.currentItem = item
+    },
+    // 是否上传
+    onSave (done) {
+      // 关闭对话框
+      this.centerDialogVisible = false
+      // 确定按钮
+      if (done) {
+        // 发布信息，触发在父组件中该组件的input事件
+        this.$emit('input', this.currentItem.url)
+      }
     }
   },
   watch: {
@@ -130,6 +147,9 @@ export default {
       width: 178px;
       height: 178px;
       display: block;
+    }
+    .currentImage{
+      border: 2px solid #4a7;
     }
   }
 </style>
