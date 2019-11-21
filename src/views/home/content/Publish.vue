@@ -23,7 +23,7 @@
        <!--自封装上传组件 -->
          <template v-if="formData.cover.type !== -1">
           <el-row :gutter="20">
-           <el-col v-for="(item,index) in formData.cover.type" :span="6" :key="index">
+           <el-col v-for="(item,index) in formData.cover.type" :span="4" :key="index">
              <upload-cover v-model="formData.cover.images[index]"></upload-cover>
             </el-col>
           </el-row>

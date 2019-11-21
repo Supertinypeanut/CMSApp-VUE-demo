@@ -21,15 +21,33 @@
               <el-radio-button :label="true">收藏</el-radio-button>
             </el-radio-group>
             <!-- 素材展示列表 -->
-            <el-row :gutter="0">
+            <el-row :gutter="20">
               <template v-for="(item,index) in  materialData">
-                <el-col :key="index" :span="3" class="currentImage">
-                  <img @click="onGetCurrent(item)" :src="item.url" style="height:100px;" >
+                <el-col style="position:relative" :key="index" :span="6">
+                  <img @click="currentItem = item" :src="item.url" style="height:150px;width:100%;cursor: pointer;" >
+                  <img class="notCurrentImage" :class="{currentImage : currentItem == item}" src="../assets/img/selected.png" >
                 </el-col>
               </template>
             </el-row>
+            <!-- 分页 -->
+            <el-row type="flex" justify="center">
+              <el-pagination
+                @current-change="handleCurrentChange"
+                :current-page.sync="material.page"
+                :page-size="material.per_page"
+                layout="prev, pager, next, jumper"
+                :total="total">
+              </el-pagination>
+            </el-row>
           </el-tab-pane>
-          <el-tab-pane label="上传文件" name="second">上传文件</el-tab-pane>
+          <el-tab-pane label="上传文件" name="second">
+           <el-upload
+              action="javascript:;"
+              :http-request="httpRequest"
+              list-type="picture-card">
+              <i class="el-icon-plus"></i>
+            </el-upload>
+          </el-tab-pane>
         </el-tabs>
       </template>
       <span slot="footer" class="dialog-footer">
@@ -60,17 +78,16 @@ export default {
       // 素材库请求对象
       material: {
         collect: null,
-        page: null,
-        per_page: null
+        page: 1,
+        per_page: 8
       },
+      // 总条数
+      total: 0,
       // 素材库响应数据
       materialData: [],
       // 当前选中对象
       currentItem: null
     }
-  },
-  created () {
-
   },
   methods: {
     // 获取素材数据
@@ -78,8 +95,10 @@ export default {
       // 发送请求
       this.$axios.get('/user/images', { params: this.material })
         .then(response => {
-          // console.log(response.data)
+          console.log(response.data)
+          // 更新数据
           this.materialData = response.data.data.results
+          this.total = response.data.data.total_count
         }).catch(() => {
           this.$message({
             message: `素材获取失败，请刷新`,
@@ -97,11 +116,6 @@ export default {
     handleClick () {
       // console.log(val, a, c)
     },
-    // 获取当前对象
-    onGetCurrent (item) {
-      console.log(item)
-      this.currentItem = item
-    },
     // 是否上传
     onSave (done) {
       // 关闭对话框
@@ -111,7 +125,31 @@ export default {
         // 发布信息，触发在父组件中该组件的input事件
         this.$emit('input', this.currentItem.url)
       }
+    },
+    // 自定以请求函数
+    httpRequest (request) {
+      console.log(request)
+      // 创建表单对象
+      const FD = new FormData()
+      FD.append('image', request.file)
+      this.$axios.post('user/images', FD)
+        .then(response => {
+          console.log(response.data)
+        }).catch(() => {
+          this.$message({
+            message: `素材上传失败，请刷新`,
+            type: 'error'
+          })
+        })
+    },
+    // 分页
+    handleCurrentChange (page) {
+      this.material.page = page
     }
+    // 删除删除的图片
+    // removeImage (deleteItem) {
+    //   console.log(deleteItem)
+    // }
   },
   watch: {
     // 监听素材库请求对象
@@ -148,8 +186,18 @@ export default {
       height: 178px;
       display: block;
     }
-    .currentImage{
-      border: 2px solid #4a7;
-    }
+  }
+  .notCurrentImage{
+    display: none;
+  }
+  // 勾选样式
+  .currentImage{
+    display: block;
+    position: absolute;
+    width: 30%;
+    height: 30%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
   }
 </style>
