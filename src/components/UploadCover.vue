@@ -21,9 +21,9 @@
               <el-radio-button :label="true">收藏</el-radio-button>
             </el-radio-group>
             <!-- 素材展示列表 -->
-            <el-row :gutter="20">
+            <el-row :gutter="0">
               <template v-for="(item,index) in  materialData">
-                <el-col :key="index" :span="6" class="currentImage">
+                <el-col :key="index" :span="3" class="currentImage">
                   <img @click="onGetCurrent(item)" :src="item.url" style="height:100px;" >
                 </el-col>
               </template>

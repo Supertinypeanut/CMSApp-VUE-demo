@@ -14,7 +14,7 @@
        <channels v-model="formData.channel_id"></channels>
      </el-form-item>
      <el-form-item label="封面">
-       <el-radio-group v-model="formData.cover.type">
+       <el-radio-group @change="onCoverType" v-model="formData.cover.type">
          <el-radio :label="0">无图</el-radio>
          <el-radio :label="1">单面</el-radio>
          <el-radio :label="3">三图</el-radio>
@@ -153,6 +153,11 @@ export default {
           })
         })
       }
+    },
+    // 更新封面图片长度
+    onCoverType () {
+      const type = this.formData.cover.type
+      type > 0 ? this.formData.cover.images.splice(0, 3 - type) : this.formData.cover.images = []
     }
   },
   components: {
