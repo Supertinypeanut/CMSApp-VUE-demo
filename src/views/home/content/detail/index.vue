@@ -4,7 +4,7 @@
       <el-link @click="onBack" type="primary">返回评论列表</el-link>
     </div>
     <h3 v-text="data.art_title"></h3>
-    <p v-text="data.art_pubdate"></p>
+    <p > {{data.art_pubdate | momentdate}}</p>
     <el-table
       :data="tableData"
       style="width: 100%">
@@ -27,6 +27,8 @@
 </template>
 
 <script>
+// 导入时间格式化moment.js
+import Moment from 'moment'
 export default {
   created () {
     this.loadData()
@@ -68,7 +70,7 @@ export default {
           source: this.$route.params.article
         }
       }).then(response => {
-        console.log(response.data.data)
+        // console.log(response.data.data)
         this.data = response.data.data
       }).catch(() => {
         this.$message({
@@ -77,6 +79,12 @@ export default {
           type: 'warning'
         })
       })
+    }
+  },
+  filters: {
+    momentdate: function (val) {
+      // console.log(val)
+      return Moment(val).format('YYYY-MM-DD hh:mm:ss')
     }
   }
 }

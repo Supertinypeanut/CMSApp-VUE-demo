@@ -42,11 +42,18 @@
 </template>
 
 <script>
+// 引入公共Vue实例
+import EventBus from '@/utils/event-bus'
 export default {
   // 获取用户数据
   created () {
     // 获取用户信息
     this.getUser()
+    // 订阅修改用户信息组件事件
+    EventBus.$on('updataUser', (user) => {
+      // 更新该组件user信息
+      this.user = user
+    })
   },
   data () {
     return {

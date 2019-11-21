@@ -2,7 +2,7 @@
   <el-card class="box-card">
   <div slot="header" class="clearfix">
     <span>账号信息</span>
-    <el-button style="float:right;" @click="onEdit" type="primary" icon="el-icon-edit" circle></el-button>
+    <el-button style="float:right;margin-top:-10px;" @click="onEdit" type="primary" icon="el-icon-edit" circle></el-button>
   </div>
   <el-row>
     <el-col class="photo" :span="24">
@@ -40,6 +40,8 @@
 </template>
 
 <script>
+// 引入公共Vue实例
+import EventBus from '@/utils/event-bus'
 export default {
   created () {
     // 数据初始化
@@ -83,6 +85,8 @@ export default {
               message: '信息修改成功',
               type: 'success'
             })
+            // 发布订阅在头部组件的updataUser事件
+            EventBus.$emit('updataUser', this.data)
           }).catch(() => {
             this.$message({
               showClose: true,
@@ -105,12 +109,17 @@ export default {
         url: 'user/photo',
         data: FD
       }).then(response => {
+        // console.log(response.data.data.photo)
+        // 更新data对象photo
+        this.data.photo = response.data.data.photo
         this.$message({
           showClose: true,
           message: '头像更改成功',
           type: 'success'
         })
         this.loadData()
+        // 发布订阅在头部组件的updataUser事件
+        EventBus.$emit('updataUser', this.data)
       }).catch(() => {
         this.$message({
           showClose: true,
