@@ -20,6 +20,15 @@
          <el-radio :label="3">三图</el-radio>
          <el-radio :label="-1">自动</el-radio>
        </el-radio-group>
+       <!--自封装上传组件 -->
+         <template v-if="formData.cover.type !== -1">
+          <el-row :gutter="20">
+           <el-col v-for="(item,index) in formData.cover.type" :span="6" :key="index">
+             <upload-cover v-model="formData.cover.images[index]"></upload-cover>
+            </el-col>
+          </el-row>
+        </template>
+
      </el-form-item>
      <el-form-item label="内容">
        <!-- <el-input type="textarea" v-model="formData.content"></el-input> -->
@@ -38,6 +47,9 @@ import '../../../../node_modules/quill/dist/quill.core.css'
 import '../../../../node_modules/quill/dist/quill.snow.css'
 import '../../../../node_modules/quill/dist/quill.bubble.css'
 import { quillEditor } from 'vue-quill-editor'
+
+// 导入上传封面组件
+import uploadCover from '@/components/UploadCover'
 
 // 导入自定义文章频道组件
 import channels from '@/components/Channels'
@@ -132,7 +144,7 @@ export default {
       if (this.targetID) {
       // 发送获取指定文章请求
         this.$axios.get(`articles/${this.targetID}`).then(response => {
-        // console.log(response.data)
+          console.log(response.data)
           this.formData = response.data.data
         }).catch(() => {
           this.$message({
@@ -147,7 +159,9 @@ export default {
     // 富文本组件
     quillEditor,
     // 自定义文章频道组件
-    channels
+    channels,
+    // 自定义封装文件上传组件
+    'upload-cover': uploadCover
   }
 }
 </script>
